@@ -48,7 +48,7 @@ class RW(commands.Cog):
 
 
     async def write(self,team):
-        with open("team.json", mode="w", encoding='utf-8') as f:
+        with open("json/team.json", mode="w", encoding='utf-8') as f:
             WriteTeam = json.dumps(team, ensure_ascii=False, indent=2)
             f.write(WriteTeam)
             f.close()

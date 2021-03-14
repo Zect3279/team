@@ -25,7 +25,8 @@ class Team(commands.Cog):
             "leave":"チームから脱退します",
             "del":"チームを削除します",
             "color":"チームカラーを変更します",
-            "list":"チーム一覧を表示します"
+            "list":"チーム一覧を表示します",
+            "in":"現在所属しているチームを表示"
         }
 
 
@@ -37,21 +38,21 @@ class Team(commands.Cog):
 
 
     @commands.command()
-    async def team(self,ctx,*com = None):
+    async def team(self,ctx,*com):
         if com == None:
             return
 
         gui = str(ctx.author.guild.id)
         aut = str(ctx.author.id)
         com = list(com)
-        team = await self.rw.read(self)
+        team = await self.rw.read()
 
         # DEBUG: print(team)
 
         await self.rw.write(team)
 
         if com:
-            if com[0] not in team_li:
+            if com[0] not in self.help_li:
                 await ctx.send(f"{com[0]}は存在しません")
                 return
             else:
@@ -82,7 +83,7 @@ class Team(commands.Cog):
                     await self.move.lis(ctx,com,team)
 
                 elif com[0] == "in":
-                    await self.move.in(ctx,com,team)
+                    await self.move.on(ctx,com,team)
 
 
                 else:
@@ -104,6 +105,9 @@ class Team(commands.Cog):
         print(txt)
         await ctx.send(f"```\n{txt}```")
 
+    @commands.command()
+    async def rgb(self,ctx):
+        await ctx.send("https://www.colordic.org/")
 
 def setup(bot):
     bot.add_cog(Team(bot))

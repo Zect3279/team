@@ -21,7 +21,7 @@ class Move(commands.Cog):
         return str(ctx.author.guild.id),str(ctx.author.id)
 
     async def reset(self,ctx,com,team):
-        gui,aut = ga(ctx)
+        gui,aut = self.ga(ctx)
         if ctx.author == self.bot.get_user(653785595075887104):
             team = {}
             await self.rw.write(team)
@@ -29,9 +29,9 @@ class Move(commands.Cog):
             print("チームがリセットされました")
 
     async def make(self,ctx,com,team):
-        gui,aut = ga(ctx)
+        gui,aut = self.ga(ctx)
         if not com[1]:
-            await ctx.send("チーム名が指定されていません")
+            await ctx.send("チーム名が指定されていません\n`/team make [チーム名]`")
         else:
             if com[1] in team[gui]["list"]:
                 await ctx.send(f"{com[1]}は存在します")
@@ -47,9 +47,9 @@ class Move(commands.Cog):
                 print(f"チーム{com[1]}が作成されました")
 
     async def join(self,ctx,com,team):
-        gui,aut = ga(ctx)
+        gui,aut = self.ga(ctx)
         if not com[1]:
-            await ctx.send("チーム名が指定されていません")
+            await ctx.send("チーム名が指定されていません\n`/make join [チーム名]`")
 
         elif com[1] not in team[gui]["list"]:
             await ctx.send(f"チーム**{com[1]}**は存在しません")
@@ -77,7 +77,7 @@ class Move(commands.Cog):
                     await ctx.send("権限レベルが足りません")
 
     async def leave(self,ctx,com,team):
-        gui,aut = ga(ctx)
+        gui,aut = self.ga(ctx)
         if not com[1]:
             await ctx.send("チーム名が指定されていません")
 
@@ -105,15 +105,16 @@ class Move(commands.Cog):
 
 
     async def dele(self,ctx,com,team):
-        gui,aut = ga(ctx)
+        gui,aut = self.ga(ctx)
         role = ctx.author.roles
         lal = []
         for l in role:
             lal.append(l.name)
-        if ("Owner" or "Admin" or "管理者" or "副管理者") not in lal:
-            await ctx.send("権限レベルが足りません")
+        # if ("Owner" or "Admin" or "管理者" or "副管理者") not in lal:
+        #     await ctx.send("権限レベルが足りません")
+        #     return
 
-        elif not com[1]:
+        if not com[1]:
             await ctx.send("チーム名が指定されていません")
 
         elif com[1] not in team[gui]["list"]:
@@ -130,7 +131,7 @@ class Move(commands.Cog):
             await self.rw.write(team)
 
     async def color(self,ctx,com,team):
-        gui,aut = ga(ctx)
+        gui,aut = self.ga(ctx)
         if not com[1]:
             await ctx.send("チーム名が指定されていません")
 
@@ -138,7 +139,11 @@ class Move(commands.Cog):
             await ctx.send(f"チーム**{com[1]}**は存在しません")
 
         else:
-            if len(com) == 5:
+            if len(com) != 5:
+                await ctx.send("色のR,G,Bを指定してください")
+                return
+
+            try:
                 guild = ctx.author.guild
                 role = discord.utils.get(guild.roles, name=com[1])
                 r = int(com[2])
@@ -152,11 +157,13 @@ class Move(commands.Cog):
                 # await ctx.send()
                 print(f"チーム{com[1]}の色がrgb({r},{g},{b})に変更されました")
                 os.remove('pic.png')
-            else:
-                await ctx.send("色のR,G,Bを指定してください")
+
+            except discord.Forbidden:
+                await ctx.send("権限レベルが足りません")
+
 
     async def lis(self,ctx,com,team):
-        gui,aut = ga(ctx)
+        gui,aut = self.ga(ctx)
         if len(com) == 2:
             if com[1] == "me":
                 role = ctx.author.roles
@@ -171,10 +178,29 @@ class Move(commands.Cog):
                 txt += f"\n{name}"
             await ctx.send(f"{txt}\n```")
 
-    async def in(self,ctx,com,team):
+    async def on(self,ctx,com,team):
         role = ctx.author.roles
         roles = role[1:]
         txt = ""
         for r in roles:
             txt += f"**{r}**\n"
         await ctx.send(f"__{ctx.author.display_name}__ の所属チーム：\n{txt}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#
