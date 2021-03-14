@@ -32,22 +32,23 @@ class Team(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         team = await self.rw.read()
-        # print(team)
+        # DEBUG: print(team)
         await self.rw.write(team)
 
 
     @commands.command()
-    async def team(self,ctx,*com):
+    async def team(self,ctx,*com = None):
+        if com == None:
+            return
+
         gui = str(ctx.author.guild.id)
         aut = str(ctx.author.id)
         com = list(com)
         team = await self.rw.read(self)
 
-        # print(team)
+        # DEBUG: print(team)
 
         await self.rw.write(team)
-
-
 
         if com:
             if com[0] not in team_li:
@@ -80,6 +81,9 @@ class Team(commands.Cog):
                 elif com[0] == "list":
                     await self.move.lis(ctx,com,team)
 
+                elif com[0] == "in":
+                    await self.move.in(ctx,com,team)
+
 
                 else:
                     await ctx.send("深刻なエラーが発生しました")
@@ -88,21 +92,6 @@ class Team(commands.Cog):
         else:
             await ctx.send("オプションを指定してください。")
 
-
-    @commands.command()
-    async def test(self,ctx,*com):
-        com = list(com)
-        if com:
-            if com[0] not in com_li:
-                await ctx.send(f"{com[0]}は存在しません")
-                return
-            else:
-                if len(com) == 2:
-                    await ctx.send(com_li[com[0]][com[1]])
-                else:
-                    await ctx.send("オプション指定がされていません。")
-        else:
-            await ctx.send("test")
 
     @commands.command()
     async def role(self,ctx):
@@ -114,42 +103,6 @@ class Team(commands.Cog):
             txt += f"{r}\n"
         print(txt)
         await ctx.send(f"```\n{txt}```")
-
-    @commands.command()
-    async def my(self,ctx):
-        role = ctx.author.roles
-        roles = role[1:]
-        txt = ""
-        for r in roles:
-            txt += f"**{r}**\n"
-        await ctx.send(f"__{ctx.author.display_name}__ の所属チーム：\n{txt}")
-
-    # @commands.command()
-    # async def make(self,ctx):
-    #     guild = ctx.author.guild
-    #     await guild.create_role(name="実験")
-
-    @commands.command(pass_context=True)
-    async def dele(self,ctx):
-        guild = ctx.author.guild
-        role = discord.utils.get(guild.roles, name="実験")
-        if role:
-            try:
-              await role.delete()
-              await ctx.send("The role {} has been deleted!".format(role.name))
-            except discord.Forbidden:
-              await ctx.send("Missing Permissions to delete this role!")
-        else:
-            await ctx.send("The role doesn't exist!")
-
-    @commands.command()
-    async def co(self,ctx):
-        guild = ctx.author.guild
-        arole = guild.roles
-        role = discord.utils.get(guild.roles, name="実験")
-        abc = len(arole)
-        await role.edit(colour=discord.Colour.from_rgb(0, 100, 0),position=abc)
-
 
 
 def setup(bot):

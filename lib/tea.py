@@ -170,3 +170,11 @@ class Move(commands.Cog):
             for name in team[gui]["list"]:
                 txt += f"\n{name}"
             await ctx.send(f"{txt}\n```")
+
+    async def in(self,ctx,com,team):
+        role = ctx.author.roles
+        roles = role[1:]
+        txt = ""
+        for r in roles:
+            txt += f"**{r}**\n"
+        await ctx.send(f"__{ctx.author.display_name}__ の所属チーム：\n{txt}")
