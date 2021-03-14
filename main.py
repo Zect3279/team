@@ -1,9 +1,10 @@
-from os import environ
-
 from bot import Zect
+import setting
 
 
 bot = Zect()
+
+BOT_TOKEN = setting.BOT
 
 extensions = [
     "async"
@@ -11,4 +12,4 @@ extensions = [
 for extension in extensions:
     bot.load_extension(extension)
 
-bot.run(environ["BOT_TOKEN"])
+bot.run(BOT_TOKEN)

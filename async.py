@@ -7,110 +7,45 @@ from PIL import Image, ImageDraw, ImageFont
 from dispander import dispand
 import os
 
-import rw
-import tea
+from lib.rw import RW
+from lib.tea import Move
 
 
 
 
-global team_li
-team_li = {
-    "reset":"チームをリセットします",
-    "make":"チームを新規作成します",
-    "join":"既存のチームに所属します",
-    "leave":"チームから脱退します",
-    "del":"チームを削除します",
-    "color":"チームカラーを変更します",
-    "list":"チーム一覧を表示します"
-}
-
-# class Role(commands.Cog):
-#     def __init__(self, bot):
-#         self.bot = bot
-#
-#     @commands.command()
-#     async def create(self, ctx, name):
-#
-#         guild = ctx.author.guild
-#         role = discord.utils.get(guild.roles, name = name)
-#
-#         if role is None:
-#             await guild.create_role(name = name)
-#             await ctx.send(f"{name} を作成しました")
-#         else:
-#             await ctx.send(f"{name} は存在しています")
-#
-#     @commands.command()
-#     async def delete(self, ctx, name):
-#
-#         guild = ctx.author.guild
-#         role = discord.utils.get(guild.roles, name = name)
-#
-#         if role is None:
-#             await ctx.send(f"{name} は存在していません")
-#         else:
-#             await role.delete()
-#             await ctx.send(f"{name} を削除しました")
-#
-#     @commands.command()
-#     async def add(self, ctx, name):
-#
-#         guild = ctx.author.guild
-#         role = discord.utils.get(guild.roles, name = name)
-#
-#         if role is None:
-#             await ctx.send(f"{name} は存在していません")
-#         elif role in ctx.author.roles:
-#             await ctx.send(f"{name} を所有しています")
-#         else:
-#             await ctx.author.add_roles(role)
-#             await ctx.send(f"{name} を付与しました")
-#
-#     @commands.command()
-#     async def remove(self, ctx, name):
-#
-#         guild = ctx.author.guild
-#         role = discord.utils.get(guild.roles, name = name)
-#
-#         if role is None:
-#             await ctx.send(f"{name} は存在していません")
-#         elif role not in ctx.author.roles:
-#             await ctx.send(f"{name} を所有していません")
-#         else:
-#             await ctx.author.remove_roles(role)
-#             await ctx.send(f"{name} を剥奪しました")
-#
-# def setup(bot):
-#     bot.add_cog(Role(bot))
-
-
-
-class Main(commands.Cog):
+class Team(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.move = Move(bot)
+        self.rw = RW(bot)
+        self.help_li = {
+            "reset":"チームをリセットします",
+            "make":"チームを新規作成します",
+            "join":"既存のチームに所属します",
+            "leave":"チームから脱退します",
+            "del":"チームを削除します",
+            "color":"チームカラーを変更します",
+            "list":"チーム一覧を表示します"
+        }
 
 
     @commands.Cog.listener()
     async def on_ready(self):
-
-        team = await rw.read(self)
-
+        team = await self.rw.read()
         # print(team)
+        await self.rw.write(team)
 
-        await rw.write(team)
-
-        print('Test is Ready!')
 
     @commands.command()
     async def team(self,ctx,*com):
         gui = str(ctx.author.guild.id)
         aut = str(ctx.author.id)
         com = list(com)
-        team = await rw.read(self)
+        team = await self.rw.read(self)
 
         # print(team)
 
-        await rw.write(team)
+        await self.rw.write(team)
 
 
 
@@ -125,25 +60,25 @@ class Main(commands.Cog):
                 #         pass
 
                 if com[0] == "reset":
-                    await tea.reset(self,ctx,com,team)
+                    await self.move.reset(ctx,com,team)
 
                 elif com[0] == "make":
-                    await tea.make(self,ctx,com,team)
+                    await self.move.make(ctx,com,team)
 
                 elif com[0] == "join":
-                    await tea.join(self,ctx,com,team)
+                    await self.move.join(ctx,com,team)
 
                 elif com[0] == "leave":
-                    await tea.leave(self,ctx,com,team)
+                    await self.move.leave(ctx,com,team)
 
                 elif com[0] == "del":
-                    await tea.dele(self,ctx,com,team)
+                    await self.move.dele(ctx,com,team)
 
                 elif com[0] == "color":
-                    await tea.color(self,ctx,com,team)
+                    await self.move.color(ctx,com,team)
 
                 elif com[0] == "list":
-                    await tea.lis(self,ctx,com,team)
+                    await self.move.lis(ctx,com,team)
 
 
                 else:
@@ -218,4 +153,4 @@ class Main(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Main(bot))
+    bot.add_cog(Team(bot))

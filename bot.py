@@ -5,6 +5,7 @@ from discord_slash import SlashCommand
 from os import environ
 
 
+
 class Zect(commands.Bot):
     def __init__(self):
         super().__init__(
