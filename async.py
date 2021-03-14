@@ -101,11 +101,6 @@ class Main(commands.Cog):
 
         print('Test is Ready!')
 
-    @commands.Cog.listener()
-    async def on_message(self, message):
-        await dispand(message)
-        pass
-
     @commands.command()
     async def team(self,ctx,*com):
         gui = str(ctx.author.guild.id)
